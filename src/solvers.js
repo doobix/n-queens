@@ -14,7 +14,34 @@
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
 window.findNRooksSolution = function(n) {
-  var solution = undefined; //fixme
+  var solution = [];
+  var board = new Board({n: n});
+
+  for (var i = 0; i < n; i++) {
+    var tempArr = [];
+    var index = (Math.floor(Math.random()*n));
+    // if (hasColConflictAt(index))
+    for (var j = 0; j < n; j++) {
+      if (j === index) {
+        tempArr.push(1);
+      } else {
+        tempArr.push(0);
+      }
+    }
+
+  }
+
+  // for (var i = 0; i < n; i++) {
+  //   var tempArr = [];
+  //   for (var j = 0; j < n; j++) {
+  //     if (i === j) {
+  //       tempArr.push(1);
+  //     } else {
+  //       tempArr.push(0);
+  //     }
+  //   }
+  //   solution.push(tempArr)
+  // }
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
@@ -24,7 +51,36 @@ window.findNRooksSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = 0;
+  var tempBoard = [];
+
+  var generator = function(rowsToGo) {
+    debugger;
+    for (var tempPosition = 0; tempPosition < n; tempPosition++) {
+      var tempRow = [];
+      for (var i = 0; i < n; i++) {
+        if (tempPosition === i) {
+          tempRow.push(1);
+        } else {
+          tempRow.push(0);
+        }
+      }
+      tempBoard.push(tempRow);
+      rowsToGo--;
+
+      if (rowsToGo > 0) {
+        generator(rowsToGo);
+      } else {
+        var board = new window.Board(tempBoard);
+        if (!board.hasAnyColConflicts() && !board.hasAnyRowConflicts()) {
+          solutionCount++;
+        }
+        tempBoard.pop();
+      }
+    }
+  };
+
+  generator(n);
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
